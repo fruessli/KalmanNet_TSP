@@ -65,6 +65,11 @@ InitSystemDynamics:\
 Some additional variable get init, like a counter i, or x_out.
 
 @@@@@ I didn't draw the model of EKNet yet. @@@@@
+@@@@@ At KGain_est @@@@@
+
+How is squeeze used in here? y = torch.squeeze(f(x))
+
+The EKNet can either have F1+F3 or F2+F4, KNet has only F2+F4.
 
 ## Plot.py
 
