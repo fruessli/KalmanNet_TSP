@@ -51,8 +51,23 @@ rsample: Takes random sample.
 xt = xt-1 * F + eq\
 yt = yt-1 * H + er + btdt
 
-## KNet_data
+## KNet_KF
 
+Normal KF
 
+## Extended_KNet_nn
+
+GRU has now nGRU layers (here 2).\
+SystemDynamics can either be set to full or partial information.
+H is called h, and F is now called f.
+
+InitSystemDynamics:\
+Some additional variable get init, like a counter i, or x_out.
+
+@@@@@ I didn't draw the model of EKNet yet. @@@@@
+
+## Plot.py
+
+From the looks of it, only a class for plotting different graphs.
 
 ## How to run:
