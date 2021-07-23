@@ -20,12 +20,12 @@ D_in are the input dimensions, ei, x(t-1), y(t).\
 D_out are the output dimensions, ei, KGain.
 
 KG_l1 is the linear layer.\
-KG_relu1 is the ReLU activation fct.\
+KG_relu1 is the ReLU activation fct.
 
 GRU:\
 Since the batch size is 1 it is simply stochastic training, one sample after another.\
 The sequence length is also 1. Thus the GRU doesn't memorize anything. So why do we even need a RNN?\
-nn.GRU(input_size, hidden_size, num_layers)\
+nn.GRU(input_size, hidden_size, num_layers)
 
 Input->Lin->ReLU->GRU->Lin->ReLU->Lin
 
