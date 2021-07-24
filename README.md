@@ -78,4 +78,9 @@ From the looks of it, only a class for plotting different graphs.
 
 ## How to run:
 
-Git can be used like normal in Colab but with ! in front. Eg, !git clone.
+Git can be used like normal in Colab but with ! in front. Eg, !git clone.\
+`!` is used to run shell commands.
+So I can also run files with `!python filename.py`.\
+I can also push pull etc like the normal console. The space on colab is only temporary, so I need to make sure that **save often and have backups!**\
+Saving colab files on GitHub is fine though. But I have clone etc. every time I open the files on Colab anew. **The space on Colab is only temporary!**\
+William said I should simply use a push at the end of my file, so I can save easy at the end.
