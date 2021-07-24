@@ -84,3 +84,14 @@ So I can also run files with `!python filename.py`.\
 I can also push pull etc like the normal console. The space on colab is only temporary, so I need to make sure that **save often and have backups!**\
 Saving colab files on GitHub is fine though. But I have clone etc. every time I open the files on Colab anew. **The space on Colab is only temporary!**\
 William said I should simply use a push at the end of my file, so I can save easy at the end.
+
+Basic Git commands: https://confluence.atlassian.com/bitbucketserver/basic-git-commands-776639767.html\
+Notable commands:
+`git clone /path/to/repository` or `git clone https://github.com/user/repository`
+`git add <filename>`
+`git commit -m "Commit message"`
+`git push origin <branchname>`
+`git checkout <branchname>`
+`git pull`
+
+Idea: Make a puplic(!) clone of KNet. Then you can clone this clone on colab and then commit, push, pull all you want without worries.
