@@ -77,3 +77,5 @@ The EKNet can either have F1+F3 or F2+F4, KNet has only F2+F4.
 From the looks of it, only a class for plotting different graphs.
 
 ## How to run:
+
+Git can be used like normal in Colab but with ! in front. Eg, !git clone.
