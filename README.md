@@ -43,7 +43,8 @@ Builds the state space model.
 
 b_matrix is a matrix of bernoulli drawn 1s and 0s, where a entry is 1 with prob p_outlier. On default p_outlier = 0.
 
-What is T? Trajectory of what?
+What is T? Trajectory of what?\
+Eg, in Lorentz-Attractor it is the trajectory of it.
 
 GenerateSequence:\
 rsample: Takes random sample.
