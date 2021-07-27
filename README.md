@@ -19,30 +19,30 @@ Notable commands:<br>
 `git checkout <branchname>`<br>
 `git pull`
 
-1. Clone the repository.
-'!git clone https://github.com/fruessli/KalmanNet_TSP_fr'
-2. Move to the correct folder.
-'%cd KalmanNet_TSP_fr/'
-3. Switch to the correct branch.
-'!git checkout main-branch'
-4. Run the files.
-'!python test.py'
+1. Clone the repository.\
+`!git clone https://github.com/fruessli/KalmanNet_TSP_fr`
+2. Move to the correct folder.\
+`%cd KalmanNet_TSP_fr/`
+3. Switch to the correct branch.\
+`!git checkout main-branch`
+4. Run the files.\
+`!python test.py`
 5. Edit the files by simply double clicking into them. The changes are saved automatically.
 
-It is also possible to commit, push etc in Colab, however I recommended to log in while cloning.
-'uname = "fruessli"
-!git config --global user.email 'name@email.com'
-!git config --global user.name '$uname'
+It is also possible to commit, push etc in Colab, however I recommended to log in while cloning.\
+`'uname = "fruessli"`\
+`!git config --global user.email 'name@email.com'`\
+`!git config --global user.name '$uname'`
 
-from getpass import getpass
-password = getpass('Password:')
-!git clone https://$uname:$password@github.com/fruessli/KalmanNet_TSP_fr
-%cd KalmanNet_TSP_fr/'
+`from getpass import getpass`\
+`password = getpass('Password:')`\
+`!git clone https://$uname:$password@github.com/fruessli/KalmanNet_TSP_fr`\
+`%cd KalmanNet_TSP_fr/`
 
 Now the files can easily be edited etc.
 
 Commiting and pushing is done as usual.
 
-'!git add .
-!git commit -m "commit msg"
-!git push origin branchname'
+`!git add .`\
+`!git commit -m "commit msg"`\
+`!git push origin branchname'`
