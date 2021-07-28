@@ -7,6 +7,7 @@ if torch.cuda.is_available():
 else:
     dev = torch.device("cpu")
 
+# Builds the Initial KNet
 def NNBuild(SysModel):
 
     Model = KalmanNetNN()

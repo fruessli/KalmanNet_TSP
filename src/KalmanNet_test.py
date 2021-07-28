@@ -10,12 +10,14 @@ else:
     dev = torch.device("cpu")
 
 
+# Tests the trained KNet.
 def NNTest(SysModel, test_input, test_target, path_results, nclt=False, rnn=False, IC=None):
 
     N_T = test_input.size()[0]
     MSE_test_linear_arr = torch.empty([N_T])
 
     # MSE LOSS Function
+    # Creates a criterion that measures the MSE between each element in the input x and target y.
     loss_fn = nn.MSELoss(reduction='mean')
 
     if(rnn):
@@ -23,6 +25,7 @@ def NNTest(SysModel, test_input, test_target, path_results, nclt=False, rnn=Fals
     else:
         Model = torch.load(path_results+'best-model.pt', map_location=dev)
 
+    # Switch on Evaluation Mode
     Model.eval()
     torch.no_grad()
 
@@ -30,6 +33,7 @@ def NNTest(SysModel, test_input, test_target, path_results, nclt=False, rnn=Fals
     x_out_array = torch.empty(N_T,SysModel.m, SysModel.T_test)
     
     start = time.time()
+    # N_T is the number of tests?
     for j in range(0, N_T):
         Model.i = 0
         # Unrolling Forward Pass
@@ -50,6 +54,7 @@ def NNTest(SysModel, test_input, test_target, path_results, nclt=False, rnn=Fals
         for t in range(0, SysModel.T_test):
             x_Net_mdl_tst[:,t] = Model(y_mdl_tst[:,t])
         
+        # Calculate Loss
         if(nclt):
             if x_Net_mdl_tst.size()[0] == 6:
                 mask = torch.tensor([True,False,False,True,False,False])
@@ -60,6 +65,7 @@ def NNTest(SysModel, test_input, test_target, path_results, nclt=False, rnn=Fals
             MSE_test_linear_arr[j] = loss_fn(x_Net_mdl_tst, test_target[j, :, :]).item()
         x_out_array[j,:,:] = x_Net_mdl_tst
 
+        # Average the Loss.
         try:
             KGain_array = torch.add(Model.KGain_array, KGain_array)
             KGain_array /= N_T

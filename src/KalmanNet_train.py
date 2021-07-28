@@ -28,23 +28,29 @@ else:
     print("using CPU!")
 
 
+# Train NN for N epochs.
 def NNTrain(SysModel, Model, cv_input, cv_target, train_input, train_target, path_results, nclt=False, sequential_training=False, rnn=False, epochs=None, train_IC=None, CV_IC=None):
 
+    # Number of Training Examples
     N_E = train_input.size()[0]
+    # Number of Cross Validation Examples
     N_CV = cv_input.size()[0]
 
     Model.to(dev, non_blocking=True)
 
 
     # MSE LOSS Function
+    # Creates a criterion that measures the MSE between each element in the input x and target y.
     loss_fn = nn.MSELoss(reduction='mean')
 
     # Use the optim package to define an Optimizer that will update the weights of
     # the model for us. Here we will use Adam; the optim package contains many other
     # optimization algoriths. The first argument to the Adam constructor tells the
     # optimizer which Tensors it should update.
+    # Optimization Algo. Extension to SGD.
     optimizer = torch.optim.Adam(Model.parameters(), lr=learning_rate, weight_decay=wd)
 
+    # Send to device (GPU/CPU).
     MSE_cv_linear_batch = torch.empty([N_CV]).to(dev, non_blocking=True)
     MSE_cv_linear_epoch = torch.empty([N_Epochs]).to(dev, non_blocking=True)
     MSE_cv_dB_epoch = torch.empty([N_Epochs]).to(dev, non_blocking=True)
@@ -61,6 +67,7 @@ def NNTrain(SysModel, Model, cv_input, cv_target, train_input, train_target, pat
     MSE_cv_dB_opt = 1000
     MSE_cv_idx_opt = 0
 
+    # Default case, N_Epochs is on default set to 100.
     if epochs is None:
         N = N_Epochs
     else:
@@ -72,7 +79,7 @@ def NNTrain(SysModel, Model, cv_input, cv_target, train_input, train_target, pat
         ### Validation Sequence Batch ###
         #################################
 
-        # Cross Validation Mode
+        # Cross Validation Mode / Switch on Evaluation Mode
         Model.eval()
 
         for j in range(0, N_CV):
@@ -129,7 +136,7 @@ def NNTrain(SysModel, Model, cv_input, cv_target, train_input, train_target, pat
         # Training Mode
         Model.train()
 
-        # Init Hidden State
+        # Init Hidden State. Fct from KNet_nn
         Model.init_hidden()
 
         Batch_Optimizing_LOSS_sum = 0
@@ -218,6 +225,7 @@ def NNTrain(SysModel, Model, cv_input, cv_target, train_input, train_target, pat
 
         print("Optimal idx:", MSE_cv_idx_opt, "Optimal :", MSE_cv_dB_opt, "[dB]")
 
+    # Done after all epochs.
     return [MSE_cv_linear_epoch, MSE_cv_dB_epoch, MSE_train_linear_epoch, MSE_train_dB_epoch]
 
 

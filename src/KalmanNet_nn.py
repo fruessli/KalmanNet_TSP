@@ -302,6 +302,7 @@ class KalmanNetNN(torch.nn.Module):
     ###############
     ### Forward ###
     ###############
+    # nn.Module has a built in forward funtion. It defines the computation performed at every call.
     def forward(self, y):
         y = y.to(dev, non_blocking=True)
 
