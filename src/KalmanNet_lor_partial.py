@@ -2,14 +2,14 @@ import torch
 torch.pi = torch.acos(torch.zeros(1)).item() * 2 # which is 3.1415927410125732
 import torch.nn as nn
 from EKF_test import EKFTest
-from Extended_RTS_Smoother_test import S_Test
+# from Extended_RTS_Smoother_test import S_Test
 from Extended_sysmdl import SystemModel
 from Extended_data import DataGen,DataLoader,DataLoader_GPU, Decimate_and_perturbate_Data,Short_Traj_Split
 from Extended_data import N_E, N_CV, N_T
-from Pipeline_ERTS import Pipeline_ERTS as Pipeline
+# from Pipeline_ERTS import Pipeline_ERTS as Pipeline
 from Pipeline_EKF import Pipeline_EKF
 
-from Extended_RTSNet_nn import RTSNetNN
+# from Extended_RTSNet_nn import RTSNetNN
 from Extended_KalmanNet_nn import KalmanNetNN
 
 from datetime import datetime
@@ -47,7 +47,7 @@ print("Current Time =", strTime)
 ###  Compare EKF, RTS and RTSNet   ###
 ######################################
 offset = 0
-DatafolderName = 'Simulations/Lorenz_Atractor/data/v0_smallT_NT1000' + '/'
+DatafolderName = '../Simulations/Lorenz_Atractor/data/v0_smallT_NT1000' + '/'
 data_gen = 'data_gen.pt'
 # data_gen_file = torch.load(DatafolderName+data_gen, map_location=cuda0)
 # [true_sequence] = data_gen_file['All Data']
