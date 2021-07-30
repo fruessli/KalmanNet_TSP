@@ -2,7 +2,7 @@ import torch
 torch.pi = torch.acos(torch.zeros(1)).item() * 2 # which is 3.1415927410125732
 import torch.nn as nn
 from KalmanNet_sysmdl import SystemModel
-from KalmanNet_data import DataGen,DataLoader,DataLoader_GPU, Decimate_and_perturbate_Data,Short_Traj_Split
+from KalmanNet_data import DataGen,DataLoader,DataLoader_GPU
 from KalmanNet_data import N_E, N_CV, N_T
 from KalmanNet_data import m, n, F, H, m1_0, m2_0
 
@@ -65,7 +65,7 @@ for rindex in range(0, len(r)):
    print("1/r2 [dB]: ", 10 * torch.log10(1/r[rindex]**2))
    print("1/q2 [dB]: ", 10 * torch.log10(1/q[rindex]**2))
    #Model
-   sys_model = SystemModel(f, q[rindex], h, r[rindex], T, T_test, m, n,"Lor")
+   sys_model = SystemModel(F, q[rindex], H, r[rindex], T, T_test, m, n,"Lor")
    sys_model.InitSequence(m1x_0, m2x_0)
 
    #Generate and load data DT case
