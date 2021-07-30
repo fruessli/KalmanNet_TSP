@@ -6,6 +6,7 @@ from filing_paths import path_model
 import sys
 sys.path.insert(1, path_model)
 from parameters import m, n, J, delta_t,delta_t_test,delta_t_gen, H_design, B, C, B_mod, C_mod, delta_t_mod, J_mod, H_mod, H_design_inv, H_mod_inv,RotMatrix
+from KalmanNet_data import F, H
 
 if torch.cuda.is_available():
     cuda0 = torch.device("cuda:0")  # you can continue going on here, like cuda:1 cuda:2....etc.
@@ -16,77 +17,94 @@ else:
 
 def f_test(x):
     
-    #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
-    A = torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)
+    # # Commented out for lin_gauss
+    # #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
+    # A = torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)
     
-    # Taylor Expansion for F    
-    F = torch.eye(m)
-    for j in range(1,J+1):
-        F_add = (torch.matrix_power(A*delta_t_test, j)/math.factorial(j)).to(cuda0)
-        F = torch.add(F, F_add).to(cuda0)
+    # # Taylor Expansion for F    
+    # F = torch.eye(m)
+    # for j in range(1,J+1):
+    #     F_add = (torch.matrix_power(A*delta_t_test, j)/math.factorial(j)).to(cuda0)
+    #     F = torch.add(F, F_add).to(cuda0)
 
     return torch.matmul(F, x)
 
 def f_gen(x):
 
-    #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
-    A = torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)
+    # # Commented out for lin_gauss
+    # #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
+    # A = torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)
     
-    # Taylor Expansion for F    
-    F = torch.eye(m)
-    for j in range(1,J+1):
-        F_add = (torch.matrix_power(A*delta_t_gen, j)/math.factorial(j)).to(cuda0)
-        F = torch.add(F, F_add).to(cuda0)
+    # # Taylor Expansion for F    
+    # F = torch.eye(m)
+    # for j in range(1,J+1):
+    #     F_add = (torch.matrix_power(A*delta_t_gen, j)/math.factorial(j)).to(cuda0)
+    #     F = torch.add(F, F_add).to(cuda0)
 
     return torch.matmul(F, x)
 
 def f(x):
 
-    #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
-    A = (torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)).to(cuda0)
+    # # Commented out for lin_gauss
+    # #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
+    # A = (torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)).to(cuda0)
     
-    # Taylor Expansion for F    
-    F = torch.eye(m)
-    for j in range(1,J+1):
-        F_add = (torch.matrix_power(A*delta_t, j)/math.factorial(j)).to(cuda0)
-        F = torch.add(F, F_add).to(cuda0)
+    # # Taylor Expansion for F    
+    # F = torch.eye(m)
+    # for j in range(1,J+1):
+    #     F_add = (torch.matrix_power(A*delta_t, j)/math.factorial(j)).to(cuda0)
+    #     F = torch.add(F, F_add).to(cuda0)
 
     return torch.matmul(F, x)
 
 def h(x):
-    return torch.matmul(H_design,x).to(cuda0)
-    #return toSpherical(x)
+    # # Commented out for lin_gauss
+    # return torch.matmul(H_design,x).to(cuda0)
+    # #return toSpherical(x)
+
+    # For lin gauss
+    return torch.matmul(H,x).to(cuda0)
 
 def fInacc(x):
 
-    #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
-    A = torch.add(torch.reshape(torch.matmul(B_mod, x),(m,m)).T,C_mod)
+    # # Commented out for lin_gauss
+    # #A = torch.add(torch.einsum('nhw,wa->nh', B, x).T,C)
+    # A = torch.add(torch.reshape(torch.matmul(B_mod, x),(m,m)).T,C_mod)
     
-    # Taylor Expansion for F    
-    F = torch.eye(m)
-    for j in range(1,J_mod+1):
-        F_add = (torch.matrix_power(A*delta_t_mod, j)/math.factorial(j)).to(cuda0)
-        F = torch.add(F, F_add).to(cuda0)
+    # # Taylor Expansion for F    
+    # F = torch.eye(m)
+    # for j in range(1,J_mod+1):
+    #     F_add = (torch.matrix_power(A*delta_t_mod, j)/math.factorial(j)).to(cuda0)
+    #     F = torch.add(F, F_add).to(cuda0)
 
     return torch.matmul(F, x)
 
 def fRotate(x):
-    A = (torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)).to(cuda0)
-    A_rot = torch.mm(RotMatrix,A)   
-    # Taylor Expansion for F    
-    F = torch.eye(m)
-    for j in range(1,J+1):
-        F_add = (torch.matrix_power(A_rot*delta_t, j)/math.factorial(j)).to(cuda0)
-        F = torch.add(F, F_add).to(cuda0)
+    # # Commented out for lin_gauss
+    # A = (torch.add(torch.reshape(torch.matmul(B, x),(m,m)).T,C)).to(cuda0)
+    # A_rot = torch.mm(RotMatrix,A)   
+    # # Taylor Expansion for F    
+    # F = torch.eye(m)
+    # for j in range(1,J+1):
+    #     F_add = (torch.matrix_power(A_rot*delta_t, j)/math.factorial(j)).to(cuda0)
+    #     F = torch.add(F, F_add).to(cuda0)
 
     return torch.matmul(F, x)
 
 def hInacc(x):
-    return torch.matmul(H_mod,x)
-    #return toSpherical(x)
+    # # Commented out for lin_gauss
+    # return torch.matmul(H_mod,x)
+    # #return toSpherical(x)
+
+    # For lin gauss
+    return torch.matmul(H,x).to(cuda0)
 
 def h_nonlinear(x):
-    return toSpherical(x)
+    # # Commented out for lin_gauss
+    # return toSpherical(x)
+
+    # For lin gauss
+    return torch.matmul(H,x).to(cuda0)
 
 def getJacobian(x, a):
     
