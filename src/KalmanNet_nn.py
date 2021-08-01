@@ -139,7 +139,7 @@ class KalmanNetNN(torch.nn.Module):
     def step_KGain_est(self, y):
 
         # Reshape and Normalize the difference in X prior
-        # Featture 4: x_t|t - x_t|t-1
+        # Feature 4: x_t|t - x_t|t-1
         #dm1x = self.m1x_prior - self.state_process_prior_0
         dm1x = self.m1x_posterior - self.m1x_prev_prior
         dm1x_reshape = torch.squeeze(dm1x)
