@@ -103,7 +103,7 @@ m2_0 = 0 * 0 * torch.eye(m).to(cuda0)
 # Data-Generation and -Loader #
 ###############################
 # T is the Trajectory length of the Sequences, 
-# ei, y_0 to y_T is calculated.
+# ie, y_0 to y_T is calculated.
 def DataGen(SysModel_data, fileName, T, T_test):
 
     ##################################

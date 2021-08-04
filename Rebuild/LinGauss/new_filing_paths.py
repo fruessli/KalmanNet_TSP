@@ -1,5 +1,4 @@
 # Specifies the path for the model and parameters in the filing system.
-# Yes, it has the same name as the original file.
 
 path_model_lin_gauss = '../Models/LinGauss/'
 

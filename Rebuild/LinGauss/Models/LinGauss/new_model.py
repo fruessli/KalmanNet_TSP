@@ -1,12 +1,12 @@
 #########################
 # Define the model used #
 #########################
-# Ei, how f(x) and h(x) look like in the Simulation.
+# Ie, how f(x) and h(x) look like in the Simulation.
 
 import math
 import torch
 
-from filing_paths import path_model
+from new_filing_paths import path_model
 import sys
 sys.path.insert(1, path_model)
 

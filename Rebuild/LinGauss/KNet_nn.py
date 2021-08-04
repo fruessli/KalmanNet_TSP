@@ -24,6 +24,7 @@ class KalmanNetNN(torch.nn.Module):
     #############
 
     # Initiate the values for KNet.
+    # Done in KNet_build.py for architecture #2.
     def Build(self, ssModel):
 
         self.InitSystemDynamics(ssModel.F, ssModel.H)

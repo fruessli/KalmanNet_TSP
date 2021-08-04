@@ -1,14 +1,17 @@
 ###############
 # SystemModel #
 ###############
-# No idea, what this does so far.
+# Generates the State Space Model Sequences, initializes them,
+# and Generates multiple Sequences of them, ie, batches.
+# Eg, x_t = F * x_t-1 + v_t
+# y_t = H * x_t + w_t
 
 import torch
 # Exactly what it sounds like, a "multi-dim" normal.
 from torch.distributions.multivariate_normal import MultivariateNormal
 
 # This seems so be the real underlying SystemModel, that the KNet should be able to find.
-# Ei, x_t = F * x_t-1 + v_t, y_t = H * x_t + w_t, 
+# Ie, x_t = F * x_t-1 + v_t, y_t = H * x_t + w_t, 
 # where v_t ~ N(0,Q), w_t ~ N(0,R), 
 # further Q = q^2 * eye, R = r^2 * eye, ny = q^2/r^2
 class SystemModel:
