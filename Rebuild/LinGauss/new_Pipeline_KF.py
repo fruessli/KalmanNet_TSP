@@ -258,7 +258,8 @@ class Pipeline_KF:
             self.model.InitSequence(self.ssModel.m1x_0)
 
             # Empty array for the outputs
-            x_out_test = torch.empty(self.ssModel.m, self.ssModel.T)
+            # self.ssModel.T seems suspect. Should probably be self.ssModel.T_test @@@@@@
+            x_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
 
             # Calculate the outputs with the current input for all Trajectories.
             # T: Number of Trajectories.

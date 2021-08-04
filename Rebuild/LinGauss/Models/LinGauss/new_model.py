@@ -11,7 +11,8 @@ import sys
 sys.path.insert(1, path_model)
 
 # May need to import some other things later.
-from new_parameters import m, n
+# from new_parameters import m, n
+from KNet_data import m, n
 from KNet_data import F, H
 
 if torch.cuda.is_available():

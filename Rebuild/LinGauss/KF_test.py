@@ -9,7 +9,7 @@ import torch.nn as nn
 # System Model of the KF.
 from KNet_KF import KalmanFilter
 # N_T: Number of Trajectories.
-from KalmanNet_data import N_T
+from KNet_data import N_T
 
 def KFTest(SysModel, test_input, test_target):
 
