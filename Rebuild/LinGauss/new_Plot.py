@@ -120,8 +120,9 @@ class Plot:
         ### dB Histogram ###
         ####################
         plt.figure(figsize=(25, 10))
+        # OUTDATED
         # WARNING! distplot will be removed in future versions of Seaborn!
-        # Use displot or histplot instead.
+        # Use displot or histplot instead. Update: It happened.
         # distplot: Combines plt's with kdeplot (and rugplot).
         # hist: Computes and plots a histogram.
         # log10: Takes the log to base 10 of each element.
@@ -130,10 +131,13 @@ class Plot:
         # kde_kws: Keyword arguments for kdeplot.
         # kdeplot: Show a univariate or bivariate distribution 
         # with a kernel density estimate.
-        sns.distplot(10 * torch.log10(MSE_KN_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color='g', label = self.modelName)
-        # Would be for the designed KF
-        #sns.distplot(10 * torch.log10(MSE_KF_design_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'b', label = 'Kalman Filter - design')
-        sns.distplot(10 * torch.log10(MSE_KF_data_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'r', label = 'Kalman Filter')
+        # sns.distplot(10 * torch.log10(MSE_KN_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color='g', label = self.modelName)
+        # # Would be for the designed KF
+        # #sns.distplot(10 * torch.log10(MSE_KF_design_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'b', label = 'Kalman Filter - design')
+        # sns.distplot(10 * torch.log10(MSE_KF_data_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'r', label = 'Kalman Filter')
+
+        sns.displot(10 * torch.log10(MSE_KN_linear_arr), kind = "kde", color='g', label = self.modelName)
+        sns.displot(10 * torch.log10(MSE_KF_data_linear_arr), kind = "kde", color='r', label = 'Kalman Filter')
 
         plt.title("Histogram [dB]",fontsize=32)
         plt.legend(fontsize=32)
