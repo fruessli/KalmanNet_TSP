@@ -123,11 +123,12 @@ class Pipeline_KF:
                 self.model.InitSequence(self.ssModel.m1x_0)
                 # Targets
                 x_out_cv = torch.empty(self.ssModel.m, self.ssModel.T)
+                KG_out_cv = torch.empty(self.ssModel.m, self.ssModel.T)
                 # Go through all Trajectories
                 for t in range(0, self.ssModel.T):
                     # Calls the NN, similar to model.forward, 
                     # but one shouldn't use model.forward directly (smth with memory).
-                    x_out_cv[:, t] = self.model(y_cv[:, t])
+                    [x_out_cv[:, t], KG_out_cv[:, t]] = self.model(y_cv[:, t])
 
                 # Compute Training Loss
                 # .item extracts the value as python float.
@@ -168,13 +169,14 @@ class Pipeline_KF:
                 y_training = train_input[n_e, :, :]
                 self.model.InitSequence(self.ssModel.m1x_0)
 
-                # Empty array for training outputs.
+                # Empty array for training outputs and KGain.
                 x_out_training = torch.empty(self.ssModel.m, self.ssModel.T)
+                KG_out_training = torch.empty(self.ssModel.m, self.ssModel.T)
                 # Train the weights for T Trajectories.
                 for t in range(0, self.ssModel.T):
                     # Calls the NN, similar to model.forward, 
                     # but one shouldn't use model.forward directly (smth with memory).
-                    x_out_training[:, t] = self.model(y_training[:, t])
+                    [x_out_training[:, t], KG_out_training[:, t]] = self.model(y_training[:, t])
 
                 # Compute Training Loss
                 LOSS = self.loss_fn(x_out_training, train_target[n_e, :, :])
@@ -260,11 +262,12 @@ class Pipeline_KF:
             # Empty array for the outputs
             # self.ssModel.T seems suspect. Should probably be self.ssModel.T_test @@@@@@
             x_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
+            KG_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
 
             # Calculate the outputs with the current input for all Trajectories.
             # T: Number of Trajectories.
             for t in range(0, self.ssModel.T):
-                x_out_test[:, t] = self.model(y_mdl_tst[:, t])
+                [x_out_test[:, t], KG_out_test[:, t]] = self.model(y_mdl_tst[:, t])
 
             # Calculate the MSE loss between the output and the target over all Trajectories.
             self.MSE_test_linear_arr[j] = loss_fn(x_out_test, test_target[j, :, :]).item()
@@ -290,4 +293,5 @@ class Pipeline_KF:
         self.Plot.NNPlot_epochs(self.N_Epochs, MSE_KF_dB_avg,
                                 self.MSE_test_dB_avg, self.MSE_cv_dB_epoch, self.MSE_train_dB_epoch)
 
-        self.Plot.NNPlot_Hist(MSE_KF_linear_arr, self.MSE_test_linear_arr)
+        # Comment out NNPlot_Hist until distsplot if fixed.
+        # self.Plot.NNPlot_Hist(MSE_KF_linear_arr, self.MSE_test_linear_arr)

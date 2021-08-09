@@ -240,7 +240,7 @@ class KalmanNetNN(torch.nn.Module):
         self.m1x_posterior = self.m1x_prior + INOV
 
         # return
-        return torch.squeeze(self.m1x_posterior)
+        return [torch.squeeze(self.m1x_posterior), torch.squeeze(self.KGain)]
 
     ########################
     ### Kalman Gain Step ###

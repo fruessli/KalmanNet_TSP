@@ -109,9 +109,10 @@ class Plot:
         plt.title(self.modelName + ":" + "MSE Loss [dB] - per Epoch", fontsize=fontSize)
         plt.savefig(fileName)
 
-    #######
-    # Plot #
-    ###########
+    ##################
+    # Plot Histogram #
+    ##################
+    # One axis is MSE loss, the other one is prob density.
     def NNPlot_Hist(self, MSE_KF_data_linear_arr, MSE_KN_linear_arr):
 
         fileName = self.folderName + 'plt_hist_dB'
