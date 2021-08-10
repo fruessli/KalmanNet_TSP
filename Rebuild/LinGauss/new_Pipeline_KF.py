@@ -12,6 +12,8 @@ import torch.nn as nn
 import random
 from new_Plot import Plot
 
+from Error_Cov import Calc_Error_Cov
+
 class Pipeline_KF:
 
     def __init__(self, Time, folderName, modelName):
@@ -123,12 +125,14 @@ class Pipeline_KF:
                 self.model.InitSequence(self.ssModel.m1x_0)
                 # Targets
                 x_out_cv = torch.empty(self.ssModel.m, self.ssModel.T)
-                KG_out_cv = torch.empty(self.ssModel.m, self.ssModel.T)
+                # Array to save KG in, required for the calculation of the error covariance.
+                # KG has the dimension m * n.
+                self.KG_out_cv = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T)
                 # Go through all Trajectories
                 for t in range(0, self.ssModel.T):
                     # Calls the NN, similar to model.forward, 
                     # but one shouldn't use model.forward directly (smth with memory).
-                    [x_out_cv[:, t], KG_out_cv[:, t]] = self.model(y_cv[:, t])
+                    [x_out_cv[:, t], self.KG_out_cv[:, :, t]] = self.model(y_cv[:, t])
 
                 # Compute Training Loss
                 # .item extracts the value as python float.
@@ -171,12 +175,12 @@ class Pipeline_KF:
 
                 # Empty array for training outputs and KGain.
                 x_out_training = torch.empty(self.ssModel.m, self.ssModel.T)
-                KG_out_training = torch.empty(self.ssModel.m, self.ssModel.T)
+                self.KG_out_training = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T)
                 # Train the weights for T Trajectories.
                 for t in range(0, self.ssModel.T):
                     # Calls the NN, similar to model.forward, 
                     # but one shouldn't use model.forward directly (smth with memory).
-                    [x_out_training[:, t], KG_out_training[:, t]] = self.model(y_training[:, t])
+                    [x_out_training[:, t], self.KG_out_training[:, :, t]] = self.model(y_training[:, t])
 
                 # Compute Training Loss
                 LOSS = self.loss_fn(x_out_training, train_target[n_e, :, :])
@@ -262,12 +266,12 @@ class Pipeline_KF:
             # Empty array for the outputs
             # self.ssModel.T seems suspect. Should probably be self.ssModel.T_test @@@@@@
             x_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
-            KG_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
+            self.KG_out_test = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T_test)
 
             # Calculate the outputs with the current input for all Trajectories.
             # T: Number of Trajectories.
             for t in range(0, self.ssModel.T):
-                [x_out_test[:, t], KG_out_test[:, t]] = self.model(y_mdl_tst[:, t])
+                [x_out_test[:, t], self.KG_out_test[:, :, t]] = self.model(y_mdl_tst[:, t])
 
             # Calculate the MSE loss between the output and the target over all Trajectories.
             self.MSE_test_linear_arr[j] = loss_fn(x_out_test, test_target[j, :, :]).item()
@@ -295,3 +299,23 @@ class Pipeline_KF:
 
         # Comment out NNPlot_Hist until distsplot if fixed.
         # self.Plot.NNPlot_Hist(MSE_KF_linear_arr, self.MSE_test_linear_arr)
+
+    ##############################
+    # Posterior Error Covariance #
+    ##############################
+    # Calculate the Posterior Error Covariance.
+    # This require K, R and H.
+
+    def Err_Cov(self, R, H):
+        P_plus_cv = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
+        P_plus_train = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
+        P_plus_test = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
+
+        # @@@@ This wont work, since it only looks at the last Validation (N_CV), last Batch (N_B), last Test (N_T)
+        # of the last Epoch. It either needs to be normed before hand (like MSE_test_dB_avg) or a bigger Tensor (N_E*N_CV*m*n*T).
+        # torch.mean returns a mean of all elements. This is only good if there is already a MSE of KF and P+.
+        
+        # for t in range(0, self.ssModel.T):
+        #     P_plus_cv[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_cv[:, : ,t], self.ssModel.m, self.ssModel.n)
+        #     P_plus_train[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_train[:, : ,t], self.ssModel.m, self.ssModel.n)
+        #     P_plus_test[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_test[:, : ,t], self.ssModel.m, self.ssModel.n)
