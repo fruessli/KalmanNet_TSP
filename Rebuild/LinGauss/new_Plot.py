@@ -137,8 +137,10 @@ class Plot:
         # #sns.distplot(10 * torch.log10(MSE_KF_design_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'b', label = 'Kalman Filter - design')
         # sns.distplot(10 * torch.log10(MSE_KF_data_linear_arr), hist=False, kde=True, kde_kws={'linewidth': 3}, color= 'r', label = 'Kalman Filter')
 
-        sns.displot(10 * torch.log10(MSE_KN_linear_arr), kind = "kde", color='g', label = self.modelName)
-        sns.displot(10 * torch.log10(MSE_KF_data_linear_arr), kind = "kde", color='r', label = 'Kalman Filter')
+        # Error: Dataset has 0 variance; skipping density estimate.
+        sns.displot(data = 10 * torch.log10(MSE_KN_linear_arr), kind = "kde", color='g', lw = 3, label = self.modelName)
+        # KF alone causes no error.
+        sns.displot(data = 10 * torch.log10(MSE_KF_data_linear_arr), kind = "kde", color='r', lw = 3, label = 'Kalman Filter')
 
         plt.title("Histogram [dB]",fontsize=32)
         plt.legend(fontsize=32)

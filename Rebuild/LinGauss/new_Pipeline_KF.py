@@ -280,6 +280,7 @@ class Pipeline_KF:
 
         # Average
         # Calculate the avg loss over all Tests.
+        # Problem: MSE_test_linear_arr is infinite. x_out_test is infinite after a few steps.
         self.MSE_test_linear_avg = torch.mean(self.MSE_test_linear_arr)
         self.MSE_test_dB_avg = 10 * torch.log10(self.MSE_test_linear_avg)
 
