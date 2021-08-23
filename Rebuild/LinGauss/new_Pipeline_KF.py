@@ -242,7 +242,7 @@ class Pipeline_KF:
         self.MSE_test_linear_arr = torch.empty([self.N_T])
 
         # Empty array for KGain in order to calc P+.
-        self.KG_out_test = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T_test, self.ssModel.N_T)
+        self.KG_out_test = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T_test, self.N_T)
 
         # MSE LOSS Function
         # ||target - target_estimated||^2
@@ -312,7 +312,7 @@ class Pipeline_KF:
         # Only calculating P+ for Testing phase for now, as there the Sigma is already available.
         # P_plus_cv = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
         # P_plus_train = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
-        self.P_plus_test = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T, self.ssModel.N_T)
+        self.P_plus_test = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T, self.N_T)
         
         # Iterate through all tests. Train and CV need to Iterate throught the Epochs additionally.
         for j in range(0, self.N_T):
