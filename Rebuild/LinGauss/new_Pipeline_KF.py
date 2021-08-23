@@ -241,6 +241,9 @@ class Pipeline_KF:
         # Empty array for test loss in each Test.
         self.MSE_test_linear_arr = torch.empty([self.N_T])
 
+        # Empty array for KGain in order to calc P+.
+        self.KG_out_test = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T_test, self.ssModel.N_T)
+
         # MSE LOSS Function
         # ||target - target_estimated||^2
         loss_fn = nn.MSELoss(reduction='mean')
@@ -266,12 +269,11 @@ class Pipeline_KF:
             # Empty array for the outputs
             # self.ssModel.T seems suspect. Should probably be self.ssModel.T_test @@@@@@
             x_out_test = torch.empty(self.ssModel.m, self.ssModel.T_test)
-            self.KG_out_test = torch.empty(self.ssModel.m, self.ssModel.n, self.ssModel.T_test)
 
             # Calculate the outputs with the current input for all Trajectories.
             # T: Number of Trajectories.
             for t in range(0, self.ssModel.T):
-                [x_out_test[:, t], self.KG_out_test[:, :, t]] = self.model(y_mdl_tst[:, t])
+                [x_out_test[:, t], self.KG_out_test[:, :, t, j]] = self.model(y_mdl_tst[:, t])
 
             # Calculate the MSE loss between the output and the target over all Trajectories.
             self.MSE_test_linear_arr[j] = loss_fn(x_out_test, test_target[j, :, :]).item()
@@ -307,15 +309,32 @@ class Pipeline_KF:
     # This require K, R and H.
 
     def Err_Cov(self, R, H):
-        P_plus_cv = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
-        P_plus_train = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
-        P_plus_test = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
-
-        # @@@@ This wont work, since it only looks at the last Validation (N_CV), last Batch (N_B), last Test (N_T)
-        # of the last Epoch. It either needs to be normed before hand (like MSE_test_dB_avg) or a bigger Tensor (N_E*N_CV*m*n*T).
-        # torch.mean returns a mean of all elements. This is only good if there is already a MSE of KF and P+.
+        # Only calculating P+ for Testing phase for now, as there the Sigma is already available.
+        # P_plus_cv = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
+        # P_plus_train = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T)
+        self.P_plus_test = torch.empty(self.ssModel.m, self.ssModel.m, self.ssModel.T, self.ssModel.N_T)
         
-        # for t in range(0, self.ssModel.T):
-        #     P_plus_cv[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_cv[:, : ,t], self.ssModel.m, self.ssModel.n)
-        #     P_plus_train[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_train[:, : ,t], self.ssModel.m, self.ssModel.n)
-        #     P_plus_test[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_test[:, : ,t], self.ssModel.m, self.ssModel.n)
+        # Iterate through all tests. Train and CV need to Iterate throught the Epochs additionally.
+        for j in range(0, self.N_T):
+            for t in range(0, self.ssModel.T):
+            #     P_plus_cv[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_cv[:, : ,t], self.ssModel.m, self.ssModel.n)
+            #     P_plus_train[:, :, t] = Calc_Error_Cov(H, R, self.KG_out_train[:, : ,t], self.ssModel.m, self.ssModel.n)
+                self.P_plus_test[:, :, t, j] = Calc_Error_Cov(H, R, self.KG_out_test[:, : ,t], self.ssModel.m, self.ssModel.n)
+
+        # Get Sigma from KFTest and calc MSE then plot.
+        # Can get Sigma rom lin_gauss so can be argument. Or make fct in Plot.py <-- probably easier
+        # So only calc p+ here and return back to lin_gauss
+
+    def Plot_Err_Cov(self, Sigma):
+        # Calculate MSE of Sigma and P_plus.
+        MSE_err_cov_test = torch.empty(self.N_T)
+        for j in range(0, self.N_T):
+            MSE_err_cov_test[j] = self.loss_fn(Sigma[:,:,:,j], self.P_plus_test[:,:,:,j])
+        # Avg
+        MSE_err_cov_test_avg = torch.mean(MSE_err_cov_test)
+        # dB
+        MSE_err_cov_test_dB_avg = 10 * torch.log10(MSE_err_cov_test_avg)
+
+        # Plot MSE
+        # @@@@@ Make this (shouldnt take too long)
+        self.Plot.NNPlot_err_cov(self.P_plus_test, Sigma)
